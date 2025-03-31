@@ -50,7 +50,7 @@ public class ItemDatabaseSO : ScriptableObject
 
     public List<ItemSO> GetItemByType(ItemType type)
     {
-        return items.FindAll(item => item.itemtype == type);
+        return items.FindAll(item => item.itemType == type);
     }
 
 
