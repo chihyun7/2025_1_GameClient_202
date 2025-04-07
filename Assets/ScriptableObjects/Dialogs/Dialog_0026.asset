@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 26
   chracterName: "\uD0D0\uD5D8\uAC00"
   text: "\uC5B4\uB5BB\uAC8C \uAC15\uC744 \uAC74\uB108\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"
-  nextild: -1
+  nextild: 1
   choices:
   - {fileID: 11400000, guid: 8ee879f763038fa4fb64a108ec36e890, type: 2}
   - {fileID: 11400000, guid: 5a1f12e0a51d9dc4ea9c836fcb7d0e44, type: 2}
