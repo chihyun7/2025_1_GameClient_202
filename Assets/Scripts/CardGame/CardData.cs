@@ -17,7 +17,7 @@ public class CardData : ScriptableObject
     public string cardName;     //카드이름
     public string description;  //카드설명
     public Sprite artwork;      //카드 이미지
-    public int manacost;        //마나비용
+    public int manaCost;        //마나비용
     public int effectAmount;    // 공격력/효과값
     public CardType cardType;   // 카드 타입
 

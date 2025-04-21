@@ -16,12 +16,14 @@ public class CardDisplay : MonoBehaviour
     public TextMeshPro descriptionText;      //설명 텍스트
 
     //카드상태
-    private bool isDragging = false;
+    public bool isDragging = false;
     private Vector3 originalPosition; // 드래그 전 원래위치
 
     // 레이어 마스크
     public LayerMask enemyLayer;            // 적 레이어
     public LayerMask playerLayer;           // 플레이어 레이어
+
+    private CardManager cardManager;
     // Start is called before the first frame update
     void Start()
     {
@@ -29,6 +31,7 @@ public class CardDisplay : MonoBehaviour
         playerLayer = LayerMask.GetMask("Player");
         enemyLayer = LayerMask.GetMask("Enemy");
 
+        cardManager = FindObjectOfType<CardManager>();
 
         SetupCard(cardData);
     }
@@ -41,7 +44,7 @@ public class CardDisplay : MonoBehaviour
 
         //3d 텍스트 업데이트
         if (nameText != null) nameText.text = data.cardName;
-        if (costText != null) costText.text = data.manacost.ToString();
+        if (costText != null) costText.text = data.manaCost.ToString();
         if (attackText != null) attackText.text = data.effectAmount.ToString();
         if (descriptionText != null) descriptionText.text = data.description;
 
@@ -66,7 +69,7 @@ public class CardDisplay : MonoBehaviour
         {
             //마우스  위치로 카드 이동
             Vector3 mousePos = Input.mousePosition;
-            mousePos.z = Camera.main.WorldToScreenPoint(originalPosition).z;  
+            mousePos.z = Camera.main.WorldToScreenPoint(transform.position).z;  
             Vector3 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
             transform.position = new Vector3(worldPos.x, worldPos.y, transform.position.z); 
         }
@@ -74,6 +77,15 @@ public class CardDisplay : MonoBehaviour
 
     private void OnMouseUp()
     {
+        
+        CaracterStats playerStats = FindObjectOfType<CaracterStats>();
+        if(playerStats == null || playerStats.currentMana < cardData.manaCost)
+        {
+            Debug.Log($"마나가 부족합니다! (필요 : {cardData.manaCost}, 현재 : {playerStats?.currentMana ?? 0})");
+        }
+
+
+
         isDragging = false;
 
         //레이캐스트로 타겟 감지
@@ -84,14 +96,14 @@ public class CardDisplay : MonoBehaviour
         bool cardUsed = false;
 
         //적 위에 두롭 했는지 검사
-        if(Physics.Raycast(ray, out hit, Mathf.Infinity, enemyLayer))
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, enemyLayer))
         {
             // 적에게 공격 효과 적용
             CaracterStats enemyStats = hit.collider.GetComponent<CaracterStats>();
 
             if (enemyStats != null)
             {
-                if(cardData.cardType == CardData.CardType.Attack)
+                if (cardData.cardType == CardData.CardType.Attack)
                 {
                     //공격 카드면 데미지 주기
                     enemyStats.TakeDamage(cardData.effectAmount);
@@ -104,10 +116,10 @@ public class CardDisplay : MonoBehaviour
                 }
             }
         }
-        else if(Physics.Raycast(ray,out hit, Mathf.Infinity, playerLayer))
+        else if (Physics.Raycast(ray, out hit, Mathf.Infinity, playerLayer))
         {
             // 플레이어에게 힐 효과 적용
-            CaracterStats playerStats = hit.collider.GetComponent<CaracterStats>();
+            //CaracterStats playerStats = hit.collider.GetComponent<CaracterStats>();
 
             if (playerStats != null)
             {
@@ -116,7 +128,7 @@ public class CardDisplay : MonoBehaviour
                     // 힐카드면 회복하기
                     playerStats.Heal(cardData.effectAmount);
                     Debug.Log($"{cardData.cardName} 카트로 플레이어의 체력을{cardData.effectAmount}회복했습니다!");
-                    cardUsed= true;
+                    cardUsed = true;
                 }
                 else
                 {
@@ -124,15 +136,36 @@ public class CardDisplay : MonoBehaviour
                 }
             }
         }
+        else if (cardManager != null)
+        { 
+
+        //버린 카드 더미 근처에 드롭했는지 검사
+        float distToDiscard = Vector3.Distance(transform.position, cardManager.disCardPosition.position);
+            if (distToDiscard < 2.0f)
+            {
+                //카드를 버리기
+                cardManager.DiscardCard(cardIndex);
+                return;
+            }
+
+    }
 
         //카드를 사용하지 않았다면 원래 위치로 돠돌리기
-        if(!cardUsed)
+        if (!cardUsed)
         {
             transform.position = originalPosition;
+            // 손패 재정렬 (필요한 경우)
+            cardManager.ArrangHand();
         }
         else
         {
-            Destroy(gameObject);    
+            // 카드를 사용했다면 버린 카드 더미로 이동
+            if (cardManager != null)
+                cardManager.DiscardCard(cardIndex);
+
+            // 카드 사용 시 마나 소모(카드가 성공적으로 사용 된 후 추가
+            playerStats.UseMana(cardData.manaCost);
+            Debug.Log($"마나를 {cardData.manaCost} 사용 했습니다. (남은 마나 : {playerStats.currentMana})");
         }
     }
 }
