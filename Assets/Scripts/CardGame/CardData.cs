@@ -14,6 +14,19 @@ public class CardData : ScriptableObject
         Utility         //유틸리티
     }
 
+    public enum AdditionalEffectType
+    {
+        None,                      //c추가 효과 없음
+        DrawCard,               // 카드 드로우
+        DiscardCard,            // 카드 버리기
+        GainMana,                   // 마나 획득
+        ReduceEnemyMana,        // 적 마나 감소
+        ReduceCardCost          // 다음 카드 비용 감소
+    }
+
+    //추과 효과 리스트
+    public List<AdditionalEffect> additionalEffects = new List< AdditionalEffect > ();
+
     public string cardName;     //카드이름
     public string description;  //카드설명
     public Sprite artwork;      //카드 이미지
@@ -36,5 +49,21 @@ public class CardData : ScriptableObject
             default:
                 return Color.white;
         }
+    }
+
+    //추가 효과 정보를 문자열로 변환
+
+    public string GetAdditionalEffectDescription()
+    {
+        if (additionalEffects.Count == 0)
+            return "";
+
+        string result = "\n";
+        foreach(var effect in additionalEffects)
+        {
+            result += effect.GetDescription() + "\n";
+        }
+
+        return result;
     }
 }
