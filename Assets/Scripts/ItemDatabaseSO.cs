@@ -1,48 +1,46 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Progress;
 
-[CreateAssetMenu(fileName = "ItemDatabase", menuName = "Inventory/Database")]
+
+[CreateAssetMenu(fileName = "ItemDatabase", menuName  = "Inventory/Database")]
 public class ItemDatabaseSO : ScriptableObject
 {
     public List<ItemSO> items = new List<ItemSO>();
 
-    // 캐싱을 위한 사전
-    private Dictionary<int, ItemSO> itemsByld;
-    private Dictionary<string, ItemSO> itemsByName;
+    private Dictionary<int, ItemSO> itemById;
+    private Dictionary<string, ItemSO> itemByName;
 
-    public void Initalize()
+    public void Initialize()
     {
-        itemsByld = new Dictionary<int, ItemSO>();
-        itemsByName = new Dictionary<string, ItemSO>();
+        itemById = new Dictionary<int, ItemSO>();
+        itemByName = new Dictionary<string, ItemSO>();
 
         foreach (var item in items)
         {
-            itemsByld[item.id] = item;
-            itemsByName[item.itemName] = item;
+            itemById[item.id] = item;
+            itemByName[item.itemName] = item;
         }
     }
 
-    public ItemSO GetItemByld(int id)
+    public ItemSO GetItemById(int id)
     {
-        if (itemsByld == null)
+        if(itemById == null)
         {
-            Initalize();
+            Initialize();
         }
-        if (itemsByld.TryGetValue(id, out var item))
+        if (itemById.TryGetValue(id, out ItemSO item))
             return item;
-
         return null;
     }
 
     public ItemSO GetItemByName(string name)
     {
-        if (itemsByName == null)
+        if (itemByName == null)
         {
-            Initalize();
+            Initialize();
         }
-        if (itemsByName.TryGetValue(name, out var item))
+        if (itemByName.TryGetValue(name, out ItemSO item))
             return item;
 
         return null;
@@ -51,18 +49,5 @@ public class ItemDatabaseSO : ScriptableObject
     public List<ItemSO> GetItemByType(ItemType type)
     {
         return items.FindAll(item => item.itemType == type);
-    }
-
-
-        // Start is called before the first frame update
-        void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

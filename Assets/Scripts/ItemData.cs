@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,19 +20,17 @@ public class ItemData
     public bool isStackable;
     public string iconPath;
 
-// ¹®ÀÚ¿­À» ¿­°ÅÇüÀ¸·Î º¯È¯ÇÏ´Â ¸Ş¼­µå
-public void InitalizeEnums()
-{
-     if(Enum.TryParse(itemTypeString, out ItemType parsedType))
-     {
+
+    public void InitalizeEnums()
+    {
+        if (Enum.TryParse(itemTypeString, out ItemType parsedType))
+        {
             itemType = parsedType;
-     }
-     else
-      {
-          Debug.LogError($"¾ÆÀÌÅÛ '{itemName}'¿¡ À¯È¿ÇÏÁö ¾ÊÀº ¾ÆÀÌÅÛ Å¸ÀÔ : {itemTypeString}");
-          //±âº»°ª ¼³Á¤
-          itemType = ItemType.Consumable;
+        }
+        else
+        {
+            Debug.LogError($"ì•„ì´í…œ '{itemName}'ì— ìœ íš¨í•˜ì§€ ì•Šì€ ì•„ì´í…œ íƒ€ì… : {itemTypeString}");
+            itemType = ItemType.Consumable;
         }
     }
-
 }

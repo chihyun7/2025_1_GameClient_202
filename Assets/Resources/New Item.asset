@@ -9,16 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 651074e8923d6334181d0cfb749d9580, type: 3}
+  m_Script: {fileID: 11500000, guid: ba939b0712f1da043b307ccc12f363d8, type: 3}
   m_Name: New Item
   m_EditorClassIdentifier: 
-  id: 0
-  itemName: 
-  nameEng: 
-  description: 
-  itemtype: 0
-  price: 0
-  power: 0
-  level: 0
-  isStackable: 0
-  icon: {fileID: 0}

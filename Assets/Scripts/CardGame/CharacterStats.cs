@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using JetBrains.Annotations;
 
 public class CharacterStats : MonoBehaviour
 {
@@ -10,15 +11,15 @@ public class CharacterStats : MonoBehaviour
     public int maxHealth = 100;
     public int currentHealth;
 
-    // UI 요소
+
     public Slider healthBar;
     public TextMeshProUGUI healthText;
 
-    // 새로 추가 되는 변수
-    public int maxMana = 10;            // 최대 마나
-    public int currentMana;                   // 헌재마나
-    public Slider ManaBar;              // 마나 바 UI
-    public TextMeshProUGUI manaText;    // 마나 텍스트 UI
+    public int maxMana = 10;
+    public int currentMana;
+    public Slider manaBar;
+    public TextMeshProUGUI manaText;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -26,38 +27,34 @@ public class CharacterStats : MonoBehaviour
         UpdateUI();
     }
 
-    // Update is called once per frame
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
-        if (DamageEffectManager.Instance != null)
+        if (DamageEffectManager.instance != null)
         {
             Vector3 position = transform.position;
-            // 랜덤 위치 오프셋 추가
             position += new Vector3(Random.Range(-0.5f, 0.5f), Random.Range(1f, 1.5f), 0);
-
-            DamageEffectManager.Instance.ShowDamage(position, damage, false);
+            DamageEffectManager.instance.ShowDamage(position, damage, false);
         }
+
     }
 
     public void Heal(int amount)
     {
         currentHealth += amount;
 
-        if (DamageEffectManager.Instance != null)
+        if (DamageEffectManager.instance != null)
         {
             Vector3 position = transform.position;
-            // 랜덤 위치 오프셋 추가
             position += new Vector3(Random.Range(-0.5f, 0.5f), Random.Range(1f, 1.5f), 0);
-
-            DamageEffectManager.Instance.ShowHeal(position, amount, false);
+            DamageEffectManager.instance.ShowHeal(position, amount, false);
         }
     }
 
     public void UseMana(int amount)
     {
         currentMana -= amount;
-        if (currentMana < 0)
+        if(currentMana < 0)
         {
             currentMana = 0;
         }
@@ -67,31 +64,31 @@ public class CharacterStats : MonoBehaviour
     public void GainMana(int amount)
     {
         currentMana += amount;
-        if (currentMana > maxMana)
+        if(currentMana > maxMana)
         {
             currentMana = maxMana;
         }
         UpdateUI();
-        }
+    }
 
     private void UpdateUI()
     {
-        if (healthBar != null)
+        if(healthBar != null)
         {
             healthBar.value = (float)currentHealth / maxHealth;
         }
 
-        if (healthText != null)
+        if(healthText != null)
         {
             healthText.text = $"{currentHealth} / {maxHealth}";
         }
 
-        if (ManaBar != null)
+        if(manaBar != null)
         {
-            ManaBar.value = (float)currentMana / maxMana;
+            manaBar.value = (float)(currentMana / maxMana);
         }
 
-        if (manaText != null)
+        if(manaText != null)
         {
             manaText.text = $"{currentMana} / {maxMana}";
         }
